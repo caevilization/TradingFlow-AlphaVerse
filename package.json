@@ -1,0 +1,31 @@
+{
+  "name": "tradingflow-marketplace",
+  "version": "1.0.0",
+  "description": "Official repo for tradingflow code.",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "node": "hardhat node",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network flowEvmTestnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network flowEvm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caevilization/tradingflow-marketplace.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caevilization/tradingflow-marketplace/issues"
+  },
+  "homepage": "https://github.com/caevilization/tradingflow-marketplace#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.13",
+    "@openzeppelin/contracts": "^5.2.0",
+    "dotenv": "^16.4.7",
+    "hardhat": "^2.22.19"
+  }
+}

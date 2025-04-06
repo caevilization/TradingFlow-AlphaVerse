@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Hardhat files
+cache/
+artifacts/
+
+# Environment variables
+.env
+
+# IDE files
+.idea/
+.vscode/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Build files
+dist/
+build/
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Misc
+.DS_Store
+*.pem
+
+# Local deployments
+deployments/localhost
+
+# TypeChain
+typechain
+typechain-types
