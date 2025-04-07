@@ -215,14 +215,14 @@ const FlowFundListPage: React.FC = () => {
       {/* Navbar */}
       <Navbar onAiToggle={() => setIsAiOpen(!isAiOpen)} isAiOpen={isAiOpen} />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 mt-16">
         {/* Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {/* Left Side - Text and Search */}
           <div className="space-y-6">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-tf-gradient-1-from to-tf-gradient-1-to bg-clip-text text-transparent">
-                TradingFlow Marketplace
+                TradingFlow Alphaverse
               </h1>
               <p className="text-xl text-tf-base-text-lmode dark:text-tf-base-text">
                 Invest in proven trading strategies created by expert traders

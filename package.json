@@ -1,5 +1,5 @@
 {
-  "name": "tradingflow-marketplace",
+  "name": "tradingflow-Alphaverse",
   "version": "1.0.0",
   "description": "Official repo for tradingflow code.",
   "main": "index.js",
@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/caevilization/tradingflow-marketplace.git"
+    "url": "git+https://github.com/caevilization/tradingflow-Alphaverse.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/caevilization/tradingflow-marketplace/issues"
+    "url": "https://github.com/caevilization/tradingflow-Alphaverse/issues"
   },
-  "homepage": "https://github.com/caevilization/tradingflow-marketplace#readme",
+  "homepage": "https://github.com/caevilization/tradingflow-Alphaverse#readme",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@nomicfoundation/hardhat-verify": "^2.0.13",
