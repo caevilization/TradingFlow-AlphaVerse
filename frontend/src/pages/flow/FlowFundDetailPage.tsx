@@ -231,8 +231,6 @@ const FlowFundDetailPage: React.FC = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [transactionHash, setTransactionHash] = useState<string>('');
   const { width, height } = useWindowSize();
-  // const { id } = useParams<{ id: string }>();
-  const [isAiOpen, setIsAiOpen] = useState(false);
   const [selectedCrypto, setSelectedCrypto] = useState<string>('');
   const [investAmount, setInvestAmount] = useState<string>('');
   const [isInvesting, setIsInvesting] = useState(false);
@@ -243,8 +241,7 @@ const FlowFundDetailPage: React.FC = () => {
     <>
       {showConfetti && <ReactConfetti width={width} height={height} />}
       <div className="min-h-screen bg-tf-base-bg1-lmode dark:bg-tf-base-bg1">
-        <Navbar onAiToggle={() => setIsAiOpen(!isAiOpen)} isAiOpen={isAiOpen} />
-
+        <Navbar />
         <div className="container mx-auto px-4 py-8">
           {/* Header Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">

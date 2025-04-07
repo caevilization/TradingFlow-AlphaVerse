@@ -1,0 +1,48 @@
+/* SidePanel Tabs Styles */
+:root {
+  --tf-base-bg1: #13131A;
+  --tf-base-bg2: #1F1F2C;
+  --tf-base-subtext: #E2E8F0;
+  --tf-accent-violet: #8B5CF6;
+}
+
+.tf-tabs .ant-tabs-tab {
+  padding: 8px 16px !important;
+  margin: 0 !important;
+}
+
+.tf-tabs .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 8px !important;
+}
+
+.tf-tabs .ant-tabs-tab .ant-tabs-tab-btn {
+  color: rgba(226, 232, 240, 0.5) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: color 0.2s !important;
+}
+
+.tf-tabs .ant-tabs-tab:hover .ant-tabs-tab-btn {
+  color: #E2E8F0 !important;
+}
+
+.tf-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #8B5CF6 !important;
+}
+
+.tf-tabs .ant-tabs-ink-bar {
+  background: #8B5CF6 !important;
+}
+
+.tf-tabs .ant-tabs-content-holder {
+  flex: 1;
+  overflow: hidden;
+}
+
+.tf-tabs .ant-tabs-content {
+  height: 100%;
+}
+
+.tf-tabs .ant-tabs-nav::before {
+  border: none !important;
+}
