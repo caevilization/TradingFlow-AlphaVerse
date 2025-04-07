@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import { FLOW_FUND_ABI, FLOW_FUND_ADDRESS, TEST_TOKEN_ADDRESS } from './FLOW_FUND_ABI';
 import ReactConfetti from 'react-confetti';
 import flowThumbnail from '../../../public/flows/1.jpg';
+import { useInView } from '../../hooks/useInView';
 
 // ERC20 代币的基础 ABI
 const ERC20_ABI = [
@@ -250,15 +251,27 @@ const FlowFundDetailPage: React.FC = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [totalInvestment, setTotalInvestment] = useState<string>('');
 
+  // 为不同部分添加动画引用
+  const [headerRef, headerInView] = useInView({ threshold: 0.2 });
+  const [metricsRef, metricsInView] = useInView({ threshold: 0.2 });
+  const [strategyRef, strategyInView] = useInView({ threshold: 0.2 });
+  const [performanceRef, performanceInView] = useInView({ threshold: 0.2 });
+  const [discussionRef, discussionInView] = useInView({ threshold: 0.2 });
+
   return (
     <>
       {showConfetti && <ReactConfetti width={width} height={height} />}
       <div className="min-h-screen bg-tf-base-bg1-lmode dark:bg-tf-base-bg1">
         <Navbar />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 mt-16">
           {/* Header Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <div className="lg:col-span-2">
+            <div 
+              ref={headerRef}
+              className={`lg:col-span-2 transition-all duration-1000 transform ${
+                headerInView ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
+              }`}
+            >
               <div className="bg-tf-base-bg2-lmode dark:bg-tf-base-bg2 rounded-xl p-6">
                 <div className="flex items-start justify-between mb-6">
                   <div>
@@ -345,7 +358,12 @@ const FlowFundDetailPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div 
+              ref={metricsRef}
+              className={`space-y-6 transition-all duration-1000 delay-300 transform ${
+                metricsInView ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+              }`}
+            >
               <Card className="p-6">
                 <h3 className="text-lg font-semibold text-tf-base-text-lmode dark:text-tf-base-text mb-4">
                   Key Metrics
@@ -827,6 +845,214 @@ const FlowFundDetailPage: React.FC = () => {
                 </div>
               </Card>
             </div>
+          </div>
+
+          {/* Strategy Section */}
+          <div 
+            ref={strategyRef}
+            className={`space-y-4 transition-all duration-1000 transform ${
+              strategyInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`}
+          >
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold text-tf-base-text-lmode dark:text-tf-base-text mb-4">
+                Strategy Overview
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-lg font-medium text-tf-base-text-lmode dark:text-tf-base-text mb-2">
+                    Grid Trading Explained
+                  </h4>
+                  <p className="text-tf-base-text-lmode dark:text-tf-base-text">
+                    This strategy implements a grid trading system on Binance, automatically
+                    buying low and selling high within predefined price ranges. The bot creates a
+                    grid of orders above and below the current market price, profiting from price
+                    volatility.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-medium text-tf-base-text-lmode dark:text-tf-base-text mb-2">
+                    Key Parameters
+                  </h4>
+                  <ul className="list-disc list-inside space-y-2 text-tf-base-text-lmode dark:text-tf-base-text">
+                    <li>Grid Width: 2%</li>
+                    <li>Number of Grids: 20</li>
+                    <li>Trading Pairs: BTC/USDT, ETH/USDT</li>
+                    <li>Rebalancing Frequency: Every 4 hours</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-medium text-tf-base-text-lmode dark:text-tf-base-text mb-2">
+                    Risk Management
+                  </h4>
+                  <ul className="list-disc list-inside space-y-2 text-tf-base-text-lmode dark:text-tf-base-text">
+                    <li>Stop Loss: -5% from entry</li>
+                    <li>Maximum Position Size: 10% of portfolio</li>
+                    <li>Leverage: None (spot trading only)</li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Performance Chart */}
+          <div 
+            ref={performanceRef}
+            className={`mt-8 transition-all duration-1000 delay-200 transform ${
+              performanceInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`}
+          >
+            <Card>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-tf-base-bg2-lmode dark:border-tf-base-bg2">
+                      <th className="text-left p-4 text-tf-base-subtext-lmode dark:text-tf-base-subtext font-medium">
+                        Investor
+                      </th>
+                      <th className="text-left p-4 text-tf-base-subtext-lmode dark:text-tf-base-subtext font-medium">
+                        Type
+                      </th>
+                      <th className="text-left p-4 text-tf-base-subtext-lmode dark:text-tf-base-subtext font-medium">
+                        Amount
+                      </th>
+                      <th className="text-left p-4 text-tf-base-subtext-lmode dark:text-tf-base-subtext font-medium">
+                        Time
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-tf-base-bg2-lmode dark:divide-tf-base-bg2">
+                    {transactions.map(tx => (
+                      <tr
+                        key={tx.id}
+                        className="hover:bg-tf-base-bg2-lmode/50 dark:hover:bg-tf-base-bg2/50 transition-colors"
+                      >
+                        <td className="p-4">
+                          <div className="flex items-center space-x-3">
+                            <Avatar>
+                              <AvatarImage src={tx.avatar} />
+                            </Avatar>
+                            <span className="font-medium text-tf-base-text-lmode dark:text-tf-base-text">
+                              {tx.user}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              tx.type === 'invest'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                            }`}
+                          >
+                            {tx.type === 'invest' ? (
+                              <>
+                                <ArrowUpRight className="w-3 h-3 mr-1" />
+                                Invest
+                              </>
+                            ) : (
+                              <>
+                                <ArrowDownRight className="w-3 h-3 mr-1" />
+                                Withdraw
+                              </>
+                            )}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <span className="font-medium text-tf-base-text-lmode dark:text-tf-base-text">
+                            ${tx.amount.toLocaleString()}
+                          </span>
+                        </td>
+                        <td className="p-4 text-tf-base-subtext-lmode dark:text-tf-base-subtext">
+                          {new Date(tx.timestamp).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+
+          {/* Discussion Section */}
+          <div 
+            ref={discussionRef}
+            className={`mt-8 transition-all duration-1000 delay-400 transform ${
+              discussionInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`}
+          >
+            <Card>
+              <div className="p-6">
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-tf-base-text-lmode dark:text-tf-base-text mb-4">
+                    Join the Discussion
+                  </h3>
+                  <div className="bg-tf-base-bg2-lmode/50 dark:bg-tf-base-bg2/50 rounded-lg p-4">
+                    <textarea
+                      className="w-full p-3 rounded-lg bg-white dark:bg-tf-base-bg2 text-tf-base-text-lmode dark:text-tf-base-text border border-tf-base-bg2-lmode dark:border-tf-base-bg2 focus:outline-none focus:ring-2 focus:ring-tf-accent-primary/20 resize-none"
+                      placeholder="Share your thoughts about this trading strategy..."
+                      rows={3}
+                    />
+                    <div className="mt-3 flex justify-between items-center">
+                      <span className="text-sm text-tf-base-subtext-lmode dark:text-tf-base-subtext">
+                        Be respectful and constructive
+                      </span>
+                      <Button variant="default" size="sm">
+                        Post Comment
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-8">
+                  {discussions.map(discussion => (
+                    <div
+                      key={discussion.id}
+                      className="group relative bg-tf-base-bg2-lmode/30 dark:bg-tf-base-bg2/30 rounded-lg p-4 hover:bg-tf-base-bg2-lmode/50 dark:hover:bg-tf-base-bg2/50 transition-colors"
+                    >
+                      <div className="flex space-x-4">
+                        <Avatar className="w-10 h-10">
+                          <AvatarImage src={discussion.avatar} />
+                        </Avatar>
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <span className="font-medium text-tf-base-text-lmode dark:text-tf-base-text">
+                                {discussion.user}
+                              </span>
+                              <span className="text-sm text-tf-base-subtext-lmode dark:text-tf-base-subtext">
+                                {new Date(discussion.timestamp).toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button className="text-tf-base-subtext-lmode dark:text-tf-base-subtext hover:text-tf-accent-primary transition-colors">
+                                Reply
+                              </button>
+                              <button className="text-tf-base-subtext-lmode dark:text-tf-base-subtext hover:text-tf-accent-primary transition-colors">
+                                Share
+                              </button>
+                            </div>
+                          </div>
+                          <p className="text-tf-base-text-lmode dark:text-tf-base-text">
+                            {discussion.content}
+                          </p>
+                          <div className="mt-2 flex items-center space-x-4">
+                            <button className="text-sm text-tf-base-subtext-lmode dark:text-tf-base-subtext hover:text-tf-accent-primary">
+                              {discussion.likes} Likes
+                            </button>
+                            <button className="text-sm text-tf-base-subtext-lmode dark:text-tf-base-subtext hover:text-tf-accent-primary">
+                              {discussion.replies} Replies
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
           </div>
 
           {/* Tabs Section */}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MoreHorizontal } from 'lucide-react';
 import { Menu } from '@headlessui/react';
 import { formatCurrency } from '../../../utils/format';
+import { useInView } from '../../../hooks/useInView';
 
 interface FlowFundThumbnailProps {
   id: number;
@@ -38,6 +39,7 @@ const FlowFundThumbnail: React.FC<FlowFundThumbnailProps> = ({
   onWithdraw,
 }) => {
   const navigate = useNavigate();
+  const [ref, isInView] = useInView({ threshold: 0.2 });
 
   const handleDetail = () => {
     navigate(`/flow/${id}`);
@@ -45,7 +47,12 @@ const FlowFundThumbnail: React.FC<FlowFundThumbnailProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-tf-base-bg2 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div 
+      ref={ref}
+      className={`bg-white dark:bg-tf-base-bg2 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-700 transform ${
+        isInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+      }`}
+    >
       <div className="flex p-4 gap-4">
         {/* Flow Preview Image */}
         <div className="w-2/3 relative group cursor-pointer" onClick={handleDetail}>
