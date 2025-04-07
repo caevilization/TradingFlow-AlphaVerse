@@ -8,9 +8,22 @@ import flowThumbnail from '../../../public/flows/1.jpg';
 
 // ERC20 代币的基础 ABI
 const ERC20_ABI = [
-  'function approve(address spender, uint256 amount) public returns (bool)',
-  'function allowance(address owner, address spender) public view returns (uint256)',
-  'function balanceOf(address account) public view returns (uint256)',
+  // Read-Only Functions
+  'function balanceOf(address owner) view returns (uint256)',
+  'function decimals() view returns (uint8)',
+  'function symbol() view returns (string)',
+  'function name() view returns (string)',
+  'function totalSupply() view returns (uint256)',
+  'function allowance(address owner, address spender) view returns (uint256)',
+
+  // Authenticated Functions
+  'function transfer(address to, uint256 value) returns (bool)',
+  'function approve(address spender, uint256 value) returns (bool)',
+  'function transferFrom(address from, address to, uint256 value) returns (bool)',
+
+  // Events
+  'event Transfer(address indexed from, address indexed to, uint256 value)',
+  'event Approval(address indexed owner, address indexed spender, uint256 value)',
 ];
 
 declare global {
@@ -71,9 +84,9 @@ const useWindowSize = () => {
 
 const CRYPTO_OPTIONS: CryptoOption[] = [
   {
-    id: 'bsc',
-    name: 'BSC Chain',
-    icon: '/token/bnb.png',
+    id: 'flow',
+    name: 'Flow',
+    icon: '/token/flow.png',
   },
   {
     id: 'eth',
@@ -250,7 +263,7 @@ const FlowFundDetailPage: React.FC = () => {
                 <div className="flex items-start justify-between mb-6">
                   <div>
                     <h1 className="text-3xl font-bold text-tf-base-text-lmode dark:text-tf-base-text mb-2">
-                      Binance Grid Trading Bot
+                      Flow Grid Trading Bot
                     </h1>
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center space-x-2">
@@ -312,7 +325,7 @@ const FlowFundDetailPage: React.FC = () => {
                     Strategy
                   </h3>
                   <p className="text-tf-base-text-lmode dark:text-tf-base-text">
-                    This bot implements a grid trading strategy on Binance's BTC/USDT pair. It
+                    This bot implements a grid trading strategy on Flow EVM's FLOW/USDT pair. It
                     places multiple buy and sell orders at regular price intervals, profiting from
                     price oscillations within a range. The strategy performs best in sideways
                     markets with high volatility.
@@ -522,17 +535,17 @@ const FlowFundDetailPage: React.FC = () => {
                             />
                             <DialogHeader>
                               <DialogTitle className="text-xl font-bold text-tf-base-text-lmode dark:text-tf-base-text">
-                                Invest in Flow Fund
+                                Invest in TradingFlow Fund
                               </DialogTitle>
                               <DialogDescription className="text-tf-base-subtext-lmode dark:text-tf-base-subtext">
-                                Choose your investment currency and amount below.
+                                Choose your investment amount in FLOW tokens below.
                               </DialogDescription>
                             </DialogHeader>
                           </div>
                           <div className="grid gap-6">
                             <div className="space-y-3">
                               <Label className="text-sm font-medium text-tf-base-text-lmode dark:text-tf-base-text">
-                                Select Chain
+                                Select Network
                               </Label>
                               <div className="grid gap-2">
                                 {CRYPTO_OPTIONS.map(option => (
@@ -542,8 +555,8 @@ const FlowFundDetailPage: React.FC = () => {
                                       option.disabled
                                         ? 'opacity-50 cursor-not-allowed bg-tf-base-bg2-lmode/10 dark:bg-tf-base-bg2/10'
                                         : selectedCrypto === option.id
-                                        ? 'bg-tf-base-bg2-lmode/30 dark:bg-tf-base-bg2/30 border-tf-gradient-1-from'
-                                        : 'hover:bg-tf-base-bg2-lmode/20 dark:hover:bg-tf-base-bg2/20 cursor-pointer'
+                                          ? 'bg-tf-base-bg2-lmode/30 dark:bg-tf-base-bg2/30 border-tf-gradient-1-from'
+                                          : 'hover:bg-tf-base-bg2-lmode/20 dark:hover:bg-tf-base-bg2/20 cursor-pointer'
                                     } border ${
                                       selectedCrypto === option.id
                                         ? 'border-tf-gradient-1-from'
@@ -583,7 +596,7 @@ const FlowFundDetailPage: React.FC = () => {
                                   placeholder="Enter amount"
                                   value={investAmount}
                                   onChange={e => setInvestAmount(e.target.value)}
-                                  className="w-full pr-24 bg-transparent border-tf-base-bg2-lmode dark:border-tf-base-bg2"
+                                  className="w-full pr-24 bg-transparent border-tf-base-bg2-lmode dark:border-tf-base-bg2 text-tf-base-subtext-lmode dark:text-tf-base-subtext"
                                   disabled={isInvesting}
                                 />
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-2">
@@ -604,7 +617,7 @@ const FlowFundDetailPage: React.FC = () => {
                               </Label>
                               <div className="p-3 bg-tf-base-bg2-lmode/10 dark:bg-tf-base-bg2/10 rounded-lg text-sm font-mono break-all text-tf-base-subtext-lmode dark:text-tf-base-subtext border border-tf-base-bg2-lmode dark:border-tf-base-bg2">
                                 <a
-                                  href={`https://testnet.bscscan.com/address/${TEST_TOKEN_ADDRESS}`}
+                                  href={`https://evm-testnet.flowscan.io/address/${TEST_TOKEN_ADDRESS}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="hover:text-blue-500 hover:underline"
@@ -646,13 +659,13 @@ const FlowFundDetailPage: React.FC = () => {
                                   const network = await provider.getNetwork();
                                   const chainId = network.chainId;
 
-                                  // 如果不是 BSC Testnet，请求切换网络
-                                  if (chainId !== 97n) {
-                                    // BSC Testnet chainId
+                                  // 如果不是 Flow EVM Testnet，请求切换网络
+                                  if (chainId !== 545n) {
+                                    // Flow EVM Testnet chainId
                                     try {
                                       await window.okxwallet.request({
                                         method: 'wallet_switchEthereumChain',
-                                        params: [{ chainId: '0x61' }],
+                                        params: [{ chainId: '0x221' }],
                                       });
                                     } catch (switchError: any) {
                                       // 如果网络不存在，添加网络
@@ -661,17 +674,17 @@ const FlowFundDetailPage: React.FC = () => {
                                           method: 'wallet_addEthereumChain',
                                           params: [
                                             {
-                                              chainId: '0x61',
-                                              chainName: 'BSC Testnet',
+                                              chainId: '0x221',
+                                              chainName: 'Flow EVM Testnet',
                                               nativeCurrency: {
-                                                name: 'BNB',
-                                                symbol: 'BNB',
+                                                name: 'FLOW',
+                                                symbol: 'FLOW',
                                                 decimals: 18,
                                               },
-                                              rpcUrls: [
-                                                'https://data-seed-prebsc-1-s1.binance.org:8545',
+                                              rpcUrls: ['https://testnet.evm.nodes.onflow.org'],
+                                              blockExplorerUrls: [
+                                                'https://evm-testnet.flowscan.io',
                                               ],
-                                              blockExplorerUrls: ['https://testnet.bscscan.com'],
                                             },
                                           ],
                                         });
@@ -686,20 +699,38 @@ const FlowFundDetailPage: React.FC = () => {
                                     signer
                                   );
 
-                                  // 检查授权额度
-                                  const allowance = await tokenContract.allowance(
-                                    await signer.getAddress(),
-                                    FLOW_FUND_ADDRESS
-                                  );
-                                  const amount = ethers.parseEther(investAmount);
+                                  try {
+                                    console.log('Getting signer address...');
+                                    const signerAddress = await signer.getAddress();
+                                    console.log('Signer address:', signerAddress);
 
-                                  // 如果授权额度不足，先请求授权
-                                  if (allowance < amount) {
-                                    const approveTx = await tokenContract.approve(
-                                      FLOW_FUND_ADDRESS,
-                                      amount
+                                    // 检查授权额度
+                                    console.log('Checking allowance...');
+                                    const investmentAmount = ethers.parseEther(investAmount);
+                                    console.log('Investment amount:', investmentAmount.toString());
+
+                                    const allowance = await tokenContract.allowance(
+                                      signerAddress,
+                                      FLOW_FUND_ADDRESS
                                     );
-                                    await approveTx.wait();
+                                    console.log('Current allowance:', allowance.toString());
+
+                                    // 如果授权额度不足，先请求授权
+                                    if (allowance < investmentAmount) {
+                                      console.log('Approving tokens...');
+                                      const approveTx = await tokenContract.approve(
+                                        FLOW_FUND_ADDRESS,
+                                        investmentAmount
+                                      );
+                                      console.log('Waiting for approval transaction...');
+                                      await approveTx.wait();
+                                      console.log('Approval confirmed!');
+                                    } else {
+                                      console.log('Sufficient allowance exists');
+                                    }
+                                  } catch (error) {
+                                    console.error('Error in allowance/approval process:', error);
+                                    throw error;
                                   }
 
                                   // 创建基金合约实例
@@ -710,7 +741,8 @@ const FlowFundDetailPage: React.FC = () => {
                                   );
 
                                   // 调用合约的 invest 函数
-                                  const investTx = await fundContract.invest(amount);
+                                  const investmentAmount = ethers.parseEther(investAmount);
+                                  const investTx = await fundContract.invest(investmentAmount);
 
                                   // 等待交易确认
                                   const receipt = await investTx.wait();
@@ -737,8 +769,8 @@ const FlowFundDetailPage: React.FC = () => {
                                   setIsInvesting(false);
                                 }
                               }}
-                              type="button"
                               disabled={!selectedCrypto || !investAmount || isInvesting}
+                              type="button"
                               className={`w-full sm:w-auto relative ${
                                 !selectedCrypto || !investAmount
                                   ? 'opacity-50 cursor-not-allowed bg-gray-400'
@@ -759,23 +791,23 @@ const FlowFundDetailPage: React.FC = () => {
                               <DialogContent className="bg-white dark:bg-tf-base-bg2 border-0">
                                 <DialogHeader>
                                   <DialogTitle>Investment Successful!</DialogTitle>
-                                  <DialogDescription>
-                                    <p className="mb-4">
+                                  <div className="mb-6 space-y-4">
+                                    <DialogDescription>
                                       You have successfully invested {investAmount} TF Tokens. Your
                                       total investment is now {totalInvestment} TF Tokens.
-                                    </p>
-                                    <p className="text-sm">
-                                      View transaction on BSCScan:{' '}
+                                    </DialogDescription>
+                                    <DialogDescription className="text-sm">
+                                      View transaction on FlowScan:{' '}
                                       <a
-                                        href={`https://testnet.bscscan.com/tx/${transactionHash}`}
+                                        href={`https://evm-testnet.flowscan.io/tx/${transactionHash}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-blue-500 hover:text-blue-600 hover:underline"
                                       >
                                         {transactionHash.slice(0, 6)}...{transactionHash.slice(-4)}
                                       </a>
-                                    </p>
-                                  </DialogDescription>
+                                    </DialogDescription>
+                                  </div>
                                 </DialogHeader>
                                 <DialogFooter>
                                   <Button type="button" onClick={() => setShowSuccessDialog(false)}>
