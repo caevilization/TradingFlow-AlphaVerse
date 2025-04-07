@@ -1,56 +1,69 @@
-const hre = require("hardhat");
+const hre = require('hardhat');
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
-  console.log("Deploying contracts with the account:", deployer.address);
+  // 确保正确初始化 ethers
+  const provider = hre.ethers.provider;
+  const signers = await hre.ethers.getSigners();
 
-  // Deploy TradingFlowToken
-  const initialSupply = ethers.parseEther("1000000"); // 1 million tokens
-  const TradingFlowToken = await ethers.getContractFactory("TradingFlowToken");
-  const token = await TradingFlowToken.deploy(
-    "TradingFlow Token",
-    "TFT",
-    initialSupply
-  );
-  await token.waitForDeployment();
-  console.log("TradingFlowToken deployed to:", await token.getAddress());
-
-  // Deploy FlowFund
-  const FlowFund = await ethers.getContractFactory("FlowFund");
-  const fund = await FlowFund.deploy(
-    "TradingFlow Fund",
-    "TFF",
-    await token.getAddress(),
-    deployer.address // Using deployer as carry fee recipient for now
-  );
-  await fund.waitForDeployment();
-  console.log("FlowFund deployed to:", await fund.getAddress());
-
-  // Verify contracts
-  if (network.name !== "hardhat" && network.name !== "localhost") {
-    console.log("Waiting for block confirmations...");
-    await token.deployTransaction.wait(6); // Wait for 6 block confirmations
-    await fund.deployTransaction.wait(6);
-
-    console.log("Verifying TradingFlowToken...");
-    await hre.run("verify:verify", {
-      address: await token.getAddress(),
-      constructorArguments: ["TradingFlow Token", "TFT", initialSupply],
-    });
-
-    console.log("Verifying FlowFund...");
-    await hre.run("verify:verify", {
-      address: await fund.getAddress(),
-      constructorArguments: [
-        "TradingFlow Fund",
-        "TFF",
-        await token.getAddress(),
-        deployer.address,
-      ],
-    });
+  if (!signers || signers.length === 0) {
+    throw new Error('No signers available. Check your network configuration.');
   }
 
-  console.log("Deployment completed!");
+  const deployer = signers[0];
+  console.log('Deploying contracts with account:', deployer.address);
+  console.log(
+    'Account balance:',
+    (await provider.getBalance(deployer.address)).toString()
+  );
+
+  // 部署 TradingFlowToken
+  const initialSupply = hre.ethers.utils.parseEther('1000000');
+  const TradingFlowToken =
+    await hre.ethers.getContractFactory('TradingFlowToken');
+  const token = await TradingFlowToken.deploy(
+    'TradingFlow Token',
+    'TFT',
+    initialSupply
+  );
+  await token.deployed();
+  console.log('TradingFlowToken deployed to:', token.address);
+
+  // 部署 FlowFund
+  const FlowFund = await hre.ethers.getContractFactory('FlowFund');
+  const fund = await FlowFund.deploy(
+    'TradingFlow Fund',
+    'TFF',
+    token.address,
+    deployer.address
+  );
+  await fund.deployed();
+  console.log('FlowFund deployed to:', fund.address);
+
+  // 验证合约
+  if (hre.network.name !== 'hardhat') {
+    console.log('Verifying contracts...');
+    try {
+      await hre.run('verify:verify', {
+        address: token.address,
+        constructorArguments: [
+          'TradingFlow Token',
+          'TFT',
+          initialSupply.toString(),
+        ],
+      });
+      await hre.run('verify:verify', {
+        address: fund.address,
+        constructorArguments: [
+          'TradingFlow Fund',
+          'TFF',
+          token.address,
+          deployer.address,
+        ],
+      });
+    } catch (e) {
+      console.log('Verification failed:', e.message);
+    }
+  }
 }
 
 main()
