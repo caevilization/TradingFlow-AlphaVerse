@@ -60,13 +60,17 @@ git clone https://github.com/your-username/TradingFlow-AlphaVerse.git
 cd TradingFlow-AlphaVerse
 
 # Install dependencies
-npm install
+pnpm install
 
 # Compile contracts
 npm run compile
 
+# Install frontend dependencies
+cd frontend
+pnpm install
+
 # Run tests
-npm test
+pnpm dev
 ```
 
 ### Environment Setup
@@ -153,7 +157,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support and inquiries:
 - Join our [Discord Community](#)
-- Follow us on [Twitter](#)
+- Follow us on [Twitter](https://x.com/TradingFlowAI)
 - Visit our [Documentation](#)
 
 ---
