@@ -60,13 +60,17 @@ git clone https://github.com/your-username/TradingFlow-AlphaVerse.git
 cd TradingFlow-AlphaVerse
 
 # Install dependencies
-npm install
+pnpm install
 
 # Compile contracts
 npm run compile
 
+# Install frontend dependencies
+cd frontend
+pnpm install
+
 # Run tests
-npm test
+pnpm dev
 ```
 
 ### Environment Setup
