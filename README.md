@@ -18,6 +18,10 @@ TradingFlow AlphaVerse represents the next evolution in decentralized quantitati
 - **Real-time Portfolio Tracking**: Advanced analytics and performance metrics
 - **Decentralized Governance**: Community-driven decision making
 
+### Demo video & deck
+- Please check our demo video via: https://youtu.be/ONd8yJISsYM
+- And our pitch deck via: https://drive.google.com/file/d/1CI5BxC8QoLjH2Z_WSaV8M-tVEVFHBNMx/view?usp=sharing
+
 ## 🔧 Technical Architecture
 
 ### Smart Contracts
@@ -156,9 +160,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## ⭐ Support
 
 For support and inquiries:
-- Join our [Discord Community](#)
-- Follow us on [Twitter](https://x.com/TradingFlowAI)
-- Visit our [Documentation](#)
+- Follow us on [X](https://x.com/TradingFlowAI)
 
 ---
 
