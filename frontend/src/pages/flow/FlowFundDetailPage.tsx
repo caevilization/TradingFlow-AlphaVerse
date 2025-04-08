@@ -17,6 +17,8 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, MessageCircle, Users, Activity } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // ERC20 代币的基础 ABI
 const ERC20_ABI = [
@@ -345,7 +347,7 @@ const FlowFundDetailPage: React.FC = () => {
                   Key Metrics
                 </h3>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center p-3 bg-tf-base-bg2-lmode/30 dark:bg-tf-base-bg2/30 rounded-lg hover:bg-tf-base-bg2-lmode/50 dark:hover:bg-tf-base-bg2/50 transition-colors">
+                  <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
                       <div
                         className={`w-2 h-2 rounded-full ${
@@ -366,7 +368,7 @@ const FlowFundDetailPage: React.FC = () => {
                       +28.5%
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-tf-base-bg2-lmode/30 dark:bg-tf-base-bg2/30 rounded-lg hover:bg-tf-base-bg2-lmode/50 dark:hover:bg-tf-base-bg2/50 transition-colors">
+                  <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
                       <div
                         className={`w-2 h-2 rounded-full ${
@@ -387,7 +389,7 @@ const FlowFundDetailPage: React.FC = () => {
                       {formatCurrency(1250000)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-tf-base-bg2-lmode/30 dark:bg-tf-base-bg2/30 rounded-lg hover:bg-tf-base-bg2-lmode/50 dark:hover:bg-tf-base-bg2/50 transition-colors">
+                  <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
                       <div
                         className={`w-2 h-2 rounded-full ${
@@ -507,7 +509,7 @@ const FlowFundDetailPage: React.FC = () => {
                   </div>
                   <div className="space-y-2">
                     <div className="relative">
-                      <Dialog>
+                      <Dialog >
                         <DialogTrigger asChild>
                           <Button variant="default" className="w-full">
                             {isInvesting ? (
@@ -635,6 +637,17 @@ const FlowFundDetailPage: React.FC = () => {
                               onClick={async () => {
                                 if (!selectedCrypto || !investAmount) return;
 
+                                const toastId = toast.info('Checking your wallet......', {
+                                  position: "top-right",
+                                  autoClose: false,
+                                  hideProgressBar: true,
+                                  closeOnClick: true,
+                                  pauseOnHover: true,
+                                  draggable: true,
+                                  progress: undefined,
+                                  theme: "dark",
+                                });
+
                                 // 检查是否安装了 OKX Wallet
                                 if (typeof window.okxwallet === 'undefined') {
                                   alert('Please install OKX Wallet first!');
@@ -711,14 +724,39 @@ const FlowFundDetailPage: React.FC = () => {
 
                                     // 如果授权额度不足，先请求授权
                                     if (allowance < investmentAmount) {
+                                      toast.update(toastId, {
+                                        render: "",
+                                        type: "none",
+                                        autoClose: 1,
+                                        hideProgressBar: false,
+                                      });
+                        
                                       console.log('Approving tokens...');
+                                      const tokenApprovingToastId = toast.info('Approving tokens...', {
+                                        position: "top-right",
+                                        autoClose: false,
+                                        hideProgressBar: true,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                        theme: "dark",
+                                      });
                                       const approveTx = await tokenContract.approve(
                                         FLOW_FUND_ADDRESS,
                                         investmentAmount
                                       );
+                                    
+                                      toast.update(tokenApprovingToastId, {
+                                        render: "Transaction approved!",
+                                        type: "success",
+                                        isLoading: false,
+                                        autoClose: 1,
+                                        hideProgressBar: true,
+                                      });
                                       console.log('Waiting for approval transaction...');
                                       await approveTx.wait();
-                                      console.log('Approval confirmed!');
+                                  
                                     } else {
                                       console.log('Sufficient allowance exists');
                                     }
@@ -728,6 +766,16 @@ const FlowFundDetailPage: React.FC = () => {
                                   }
 
                                   // 创建基金合约实例
+                                  const waitingToast = toast.info('Executing transaction...', {
+                                    position: "top-right",
+                                    autoClose: false,
+                                    hideProgressBar: true,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "dark",
+                                  });
                                   const fundContract = new ethers.Contract(
                                     FLOW_FUND_ADDRESS,
                                     FLOW_FUND_ABI,
@@ -752,13 +800,40 @@ const FlowFundDetailPage: React.FC = () => {
                                   setTotalInvestment(totalInvestment);
                                   setTransactionHash(receipt.hash);
                                   setShowSuccessDialog(true);
-                                  // 延长显示时间到30秒
+                                  // 延长显示时间到10秒
                                   setTimeout(() => {
                                     setShowConfetti(false);
                                     setShowSuccessDialog(false);
-                                  }, 30000);
+                                  }, 10000);
+                                  toast.update(waitingToast, {
+                                    render: "",
+                                    type: "none",
+                                    isLoading: false,
+                                    autoClose: 1,
+                                    hideProgressBar: true,
+                                  });
+                                  toast.success('Investment successful!', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "dark",
+                                  });
                                 } catch (err: any) {
                                   console.error('Investment failed:', err);
+                                  toast.error('Investment failed!', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "dark",
+                                  });
                                 } finally {
                                   setIsInvesting(false);
                                 }
@@ -804,7 +879,14 @@ const FlowFundDetailPage: React.FC = () => {
                                   </div>
                                 </DialogHeader>
                                 <DialogFooter>
-                                  <Button type="button" onClick={() => setShowSuccessDialog(false)}>
+                                  <Button 
+                                    type="button" 
+                                    onClick={() => {
+                      
+                                      setShowSuccessDialog(false);
+                                  
+                                    }}
+                                  >
                                     Done
                                   </Button>
                                 </DialogFooter>
@@ -1236,10 +1318,10 @@ const FlowFundDetailPage: React.FC = () => {
           </Tabs>
         </div>
       </div>
-
       {/* Image Preview Dialog */}
       <Dialog open={showImagePreview} onOpenChange={setShowImagePreview}>
         <DialogContent className="max-w-4xl bg-transparent border-0 p-0">
+          <DialogTitle className="sr-only">Fund Preview Image</DialogTitle>
           <img
             src={fundPreview}
             alt="Fund Preview"
@@ -1248,6 +1330,18 @@ const FlowFundDetailPage: React.FC = () => {
           />
         </DialogContent>
       </Dialog>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </>
   );
 };
