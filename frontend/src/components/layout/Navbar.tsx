@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { Moon, Sun, ShoppingBag,RadioTower } from 'lucide-react';
+import { Moon, Sun, ShoppingBag } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
@@ -69,14 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'default', onAiToggle, isAiOp
 
         {/* Right section */}
         <div className="flex items-center space-x-4">
-          {!isLanding && (
-            <button
-              onClick={() => navigate('/flow/funds')}
-              className={`p-2 rounded-lg hover:bg-white/10 transition-colors ${textColor}`}
-            >
-              <RadioTower className={iconSize} />
-            </button>
-          )}
+        
 
           <button
             onClick={() => navigate('/flow/funds')}
